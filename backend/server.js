@@ -1,6 +1,7 @@
 const express = require("express");
 const app = express();
 const { pool } = require("./dbconfig");
+const bcrypt = require("bcrypt");
 
 const PORT = process.env.PORT || 4000;
 
@@ -23,7 +24,7 @@ app.get("/users/dashboard", (req, res) => {
   res.render("dashboard", { user: "Conor" });
 });
 
-app.post("/users/register", (req, res) => {
+app.post("/users/register", async (req, res) => {
   let { name, email, password, password2 } = req.body;
 
   console.log({
@@ -35,7 +36,7 @@ app.post("/users/register", (req, res) => {
 
   let errors = [];
 
-  if (!name || !email || !password || password2) {
+  if (!name || !email || !password || !password2) {
     errors.push({ message: "Please enter all fields" });
   }
 
@@ -49,6 +50,11 @@ app.post("/users/register", (req, res) => {
 
   if (errors.length > 0) {
     res.render("register", { errors });
+  } else {
+    //form validation passed
+
+    let hashedPassword = await bcrypt.hash(password, 10);
+    console.log(hashedPassword);
   }
 });
 
