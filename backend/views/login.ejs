@@ -12,6 +12,12 @@
     <a href="/">Home</a>
     <h1>Login Page</h1>
 
+    <ul>
+      <% if (messages.success_msg){%>
+        <li><%= messages.success_msg %></li>
+      <% } %>
+    </ul>
+
     <form action="/users/login">
         <input
           type="text"
