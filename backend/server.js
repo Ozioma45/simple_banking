@@ -42,7 +42,19 @@ app.get("/users/login", (req, res) => {
 });
 
 app.get("/users/dashboard", (req, res) => {
+  if (!req.user) {
+    req.flash("error", "You must be logged in to view dashboard");
+    return res.redirect("/users/login");
+  }
   res.render("dashboard", { user: req.user.name });
+});
+
+app.get("/users/logout", (req, res, next) => {
+  req.logOut((err) => {
+    return next(err);
+  });
+  req.flash("success_msg", "You are logged out");
+  res.redirect("/users/login");
 });
 
 app.post("/users/register", async (req, res) => {
