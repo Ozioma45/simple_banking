@@ -18,7 +18,13 @@
       <% } %>
     </ul>
 
-    <form action="/users/login">
+    <ul>
+      <% if (messages.error){%>
+        <li><%= messages.error %></li>
+      <% } %>
+    </ul>
+
+    <form action="/users/login" method="POST">
         <input
           type="text"
           id="email"

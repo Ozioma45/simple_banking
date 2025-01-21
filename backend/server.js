@@ -4,6 +4,11 @@ const { pool } = require("./dbconfig");
 const bcrypt = require("bcrypt");
 const session = require("express-session");
 const flash = require("express-flash");
+const passport = require("passport");
+
+const initializePassport = require("./passportConfig");
+
+initializePassport(passport);
 
 const PORT = process.env.PORT || 4000;
 
@@ -18,6 +23,9 @@ app.use(
     saveUninitialized: false,
   })
 );
+
+app.use(passport.initialize());
+app.use(passport.session());
 
 app.use(flash());
 
@@ -34,7 +42,7 @@ app.get("/users/login", (req, res) => {
 });
 
 app.get("/users/dashboard", (req, res) => {
-  res.render("dashboard", { user: "Conor" });
+  res.render("dashboard", { user: req.user.name });
 });
 
 app.post("/users/register", async (req, res) => {
@@ -103,6 +111,15 @@ app.post("/users/register", async (req, res) => {
     );
   }
 });
+
+app.post(
+  "/users/login",
+  passport.authenticate("local", {
+    successRedirect: "/users/dashboard",
+    failureRedirect: "/users/login",
+    failureFlash: true,
+  })
+);
 
 app.listen(PORT, () => {
   console.log(`server running on ${PORT}`);
