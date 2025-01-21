@@ -33,28 +33,26 @@ app.get("/", (req, res) => {
   res.render("index");
 });
 
-app.get("/users/register", (req, res) => {
+app.get("/users/register", checkAuthenticated, (req, res) => {
   res.render("register");
 });
 
-app.get("/users/login", (req, res) => {
+app.get("/users/login", checkAuthenticated, (req, res) => {
   res.render("login");
 });
 
-app.get("/users/dashboard", (req, res) => {
-  if (!req.user) {
-    req.flash("error", "You must be logged in to view dashboard");
-    return res.redirect("/users/login");
-  }
+app.get("/users/dashboard", checkNotAuthenticated, (req, res) => {
   res.render("dashboard", { user: req.user.name });
 });
 
 app.get("/users/logout", (req, res, next) => {
   req.logOut((err) => {
-    return next(err);
+    if (err) {
+      return next(err); // Handle any error during logout
+    }
+    req.flash("success_msg", "You are logged out");
+    res.redirect("/users/login");
   });
-  req.flash("success_msg", "You are logged out");
-  res.redirect("/users/login");
 });
 
 app.post("/users/register", async (req, res) => {
@@ -132,6 +130,22 @@ app.post(
     failureFlash: true,
   })
 );
+
+function checkAuthenticated(req, res, next) {
+  if (req.isAuthenticated()) {
+    return res.redirect("/users/dashboard");
+  }
+
+  next();
+}
+
+function checkNotAuthenticated(req, res, next) {
+  if (req.isAuthenticated()) {
+    return next();
+  }
+
+  res.redirect("/users/login");
+}
 
 app.listen(PORT, () => {
   console.log(`server running on ${PORT}`);
