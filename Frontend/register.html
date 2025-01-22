@@ -5,13 +5,13 @@
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <title>Register - TrustBank</title>
-    <link rel="stylesheet" href="fromstyle.css" />
+    <link rel="stylesheet" href="css/fromstyle.css" />
   </head>
   <body>
     <div class="form-container">
       <h2>Create an Account</h2>
-      <form method="post">
-        <input type="text" name="fullname" placeholder="Full Name" required />
+      <form method="post" action="/register">
+        <input type="text" name="name" placeholder="Name" required />
         <input type="email" name="email" placeholder="Email" required />
         <input
           type="password"
@@ -20,7 +20,7 @@
           required />
         <input
           type="password"
-          name="confirm_password"
+          name="password2"
           placeholder="Confirm Password"
           required />
         <button type="submit" class="btn">Register</button>
@@ -29,5 +29,23 @@
         </div>
       </form>
     </div>
+
+    <script>
+      const urlParams = new URLSearchParams(window.location.search);
+      const errors = urlParams.get("errors");
+
+      if (errors) {
+        const errorList = JSON.parse(errors);
+        const errorContainer = document.createElement("div");
+        errorContainer.classList.add("error-messages");
+        errorList.forEach((err) => {
+          const error = document.createElement("p");
+          error.classList.add("error");
+          error.textContent = err.message;
+          errorContainer.appendChild(error);
+        });
+        document.body.prepend(errorContainer);
+      }
+    </script>
   </body>
 </html>
