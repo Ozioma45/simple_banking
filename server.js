@@ -208,7 +208,7 @@ app.post("/request-password-reset", async (req, res) => {
           from: "no-reply@trustbank.com",
           subject: "Password Reset Request",
           text: `You requested a password reset. Click the link below to reset your password:\n\n
-        http://localhost:5000/reset-password?token=${token}\n\n
+        https://simple-banking-95qb.onrender.com/reset-password?token=${token}\n\n
         This link will expire in 15 minutes.`,
         };
 
