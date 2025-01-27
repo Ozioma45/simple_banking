@@ -1,6 +1,6 @@
 const express = require("express");
 
-//for reset password
+// For reset password
 const crypto = require("crypto");
 const nodemailer = require("nodemailer");
 
@@ -21,8 +21,10 @@ initializePassport(passport);
 const PORT = process.env.PORT || 4000;
 
 // Middleware to serve static files
-app.use(express.static(path.join(__dirname, "../frontend")));
-app.use("/static", express.static(path.join(__dirname, "../frontend")));
+app.use(express.static(path.join(__dirname, "views")));
+app.use("/static/css", express.static(path.join(__dirname, "views/css")));
+app.use("/static/js", express.static(path.join(__dirname, "views/js")));
+app.use("/static/images", express.static(path.join(__dirname, "views/images")));
 
 app.set("view engine", "ejs");
 app.use(express.urlencoded({ extended: false }));
@@ -42,15 +44,15 @@ app.use(flash());
 
 // Routes
 app.get("/", (req, res) => {
-  res.sendFile(path.join(__dirname, "../frontend/index.html"));
+  res.render("index");
 });
 
-app.get("/login", (req, res) => {
-  res.sendFile(path.join(__dirname, "../frontend/login.html"));
+app.get("/login", checkAuthenticated, (req, res) => {
+  res.render("login");
 });
 
-app.get("/register", (req, res) => {
-  res.sendFile(path.join(__dirname, "../frontend/register.html"));
+app.get("/register", checkAuthenticated, (req, res) => {
+  res.render("register");
 });
 
 app.get("/dashboard", checkNotAuthenticated, (req, res) => {
@@ -65,13 +67,12 @@ app.get("/logout", (req, res, next) => {
   });
 });
 
-// Step 2: Serve reset password form
+// Password reset routes
 app.get("/reset-password", (req, res) => {
   const { token } = req.query;
-  res.sendFile(path.join(__dirname, "../frontend/reset-password.html"));
+  res.render("reset-password", { token });
 });
 
-// Step 3: Handle new password submission
 app.post("/reset-password", async (req, res) => {
   const { token, password, password2 } = req.body;
 
@@ -81,7 +82,6 @@ app.post("/reset-password", async (req, res) => {
   }
 
   try {
-    // Find user by token
     const result = await pool.query(
       "SELECT * FROM users WHERE reset_token = $1 AND reset_token_expires > $2",
       [token, Date.now()]
@@ -93,11 +93,8 @@ app.post("/reset-password", async (req, res) => {
     }
 
     const user = result.rows[0];
-
-    // Hash new password
     const hashedPassword = await bcrypt.hash(password, 10);
 
-    // Update user password
     await pool.query(
       "UPDATE users SET password = $1, reset_token = NULL, reset_token_expires = NULL WHERE id = $2",
       [hashedPassword, user.id]
@@ -114,13 +111,6 @@ app.post("/reset-password", async (req, res) => {
 app.post("/register", async (req, res) => {
   let { name, email, password, password2 } = req.body;
 
-  console.log({
-    name,
-    email,
-    password,
-    password2,
-  });
-
   let errors = [];
 
   if (!name || !email || !password || !password2) {
@@ -131,7 +121,7 @@ app.post("/register", async (req, res) => {
     errors.push({ message: "Password should be at least 6 characters" });
   }
 
-  if (password != password2) {
+  if (password !== password2) {
     errors.push({ message: "Passwords do not match" });
   }
 
@@ -142,9 +132,7 @@ app.post("/register", async (req, res) => {
   }
 
   try {
-    //form validation passed
     const hashedPassword = await bcrypt.hash(password, 10);
-    console.log(hashedPassword);
 
     const result = await pool.query("SELECT * FROM users WHERE email = $1", [
       email,
@@ -157,12 +145,11 @@ app.post("/register", async (req, res) => {
       );
     }
 
-    // Proceed with inserting the new user into the database
     await pool.query(
       `INSERT INTO users (name, email, password) VALUES ($1, $2, $3) RETURNING id, password`,
       [name, email, hashedPassword]
     );
-    console.log(result.rows);
+
     req.flash("success_msg", "You are now registered. Please log in");
     res.redirect("/login");
   } catch (err) {
@@ -180,12 +167,10 @@ app.post(
   })
 );
 
-// Step 1: Handle password reset request
 app.post("/request-password-reset", async (req, res) => {
   const { email } = req.body;
 
   try {
-    // Check if email exists
     pool.query(
       "SELECT * FROM users WHERE email = $1",
       [email],
@@ -197,17 +182,14 @@ app.post("/request-password-reset", async (req, res) => {
           return res.redirect("/reset");
         }
 
-        // Generate a reset token
         const token = crypto.randomBytes(20).toString("hex");
-        const expires = Date.now() + 15 * 60 * 1000; // Token expires in 15 mins
+        const expires = Date.now() + 15 * 60 * 1000;
 
-        // Store token in the database
         await pool.query(
           "UPDATE users SET reset_token = $1, reset_token_expires = $2 WHERE email = $3",
           [token, expires, email]
         );
 
-        // Send reset link via email
         const transporter = nodemailer.createTransport({
           service: "gmail",
           auth: {
@@ -221,7 +203,7 @@ app.post("/request-password-reset", async (req, res) => {
           from: "no-reply@trustbank.com",
           subject: "Password Reset Request",
           text: `You requested a password reset. Click the link below to reset your password:\n\n
-        http://localhost:5000/reset-password?token=${token}\n\n
+        http://localhost:4000/reset-password?token=${token}\n\n
         This link will expire in 15 minutes.`,
         };
 
@@ -242,7 +224,6 @@ function checkAuthenticated(req, res, next) {
   if (req.isAuthenticated()) {
     return res.redirect("/dashboard");
   }
-
   next();
 }
 
@@ -250,10 +231,9 @@ function checkNotAuthenticated(req, res, next) {
   if (!req.isAuthenticated()) {
     return res.redirect("/login");
   }
-
   next();
 }
 
 app.listen(PORT, () => {
-  console.log(`server running on ${PORT}`);
+  console.log(`Server running on http://localhost:${PORT}`);
 });
