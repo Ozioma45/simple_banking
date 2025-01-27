@@ -26,28 +26,6 @@ TrustBank is a user authentication system built using **Node.js, Express, Postgr
 - **Session Management:** express-session
 - **Templating Engine:** EJS (previously, now static HTML)
 
-## Project Structure
-
-```
-TrustBank/
-│-- backend/
-│   │-- server.js          # Main server file
-│   │-- dbconfig.js        # Database connection
-│   │-- passportConfig.js  # Passport authentication strategy
-│   │-- routes/            # API routes
-│   └── models/            # Database models (users table)
-│
-│-- frontend/
-│   │-- index.html         # Home page
-│   │-- login.html         # Login page
-│   │-- register.html      # Registration page
-│   │-- reset.html         # Reset password page
-│   │-- css/               # Stylesheets
-│   └── js/                # Frontend scripts
-│
-└── README.md
-```
-
 ## Database Setup
 
 Ensure you have PostgreSQL installed and running. Create a database named `trustbank_db` and set up a `users` table:
