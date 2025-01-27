@@ -18,7 +18,7 @@ const initializePassport = require("./passportConfig");
 
 initializePassport(passport);
 
-const PORT = process.env.PORT || 4000;
+const PORT = process.env.PORT || 5000;
 
 // Middleware to serve static files
 app.use(express.static(path.join(__dirname, "views")));
@@ -45,6 +45,10 @@ app.use(flash());
 // Routes
 app.get("/", (req, res) => {
   res.render("index");
+});
+
+app.get("/reset", (req, res) => {
+  res.render("reset");
 });
 
 app.get("/login", checkAuthenticated, (req, res) => {
@@ -203,7 +207,7 @@ app.post("/request-password-reset", async (req, res) => {
           from: "no-reply@trustbank.com",
           subject: "Password Reset Request",
           text: `You requested a password reset. Click the link below to reset your password:\n\n
-        http://localhost:4000/reset-password?token=${token}\n\n
+        http://localhost:5000/reset-password?token=${token}\n\n
         This link will expire in 15 minutes.`,
         };
 
