@@ -10,10 +10,10 @@ const connectionString = `postgresql://${process.env.DB_USER}:${process.env.DB_P
 
 // Create the Pool instance
 const pool = new Pool({
-  connectionString: isProduction
-    ? process.env.DATABASE_URL // Use DATABASE_URL for production (e.g., from Heroku)
-    : connectionString,
-  ssl: isProduction, // Enable SSL for production
+  connectionString: isProduction ? process.env.DATABASE_URL : connectionString,
+  ssl: isProduction
+    ? { rejectUnauthorized: false } // Ensure this for Render's PostgreSQL
+    : false,
 });
 
 module.exports = { pool };
