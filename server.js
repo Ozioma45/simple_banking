@@ -35,6 +35,7 @@ app.use(
     secret: process.env.SESSION_SECRET || "defaultsecret",
     resave: false,
     saveUninitialized: false,
+    cookie: { maxAge: 1000 * 60 * 60 }, // 1 hour
   })
 );
 
@@ -44,7 +45,7 @@ app.use(flash());
 
 // Routes
 app.get("/", (req, res) => {
-  res.render("index");
+  res.render("index", { isLoggedIn: req.isAuthenticated() });
 });
 
 app.get("/reset", (req, res) => {

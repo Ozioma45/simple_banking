@@ -15,8 +15,13 @@
         <li><a href="#features">Features</a></li>
         <li><a href="#about">About Us</a></li>
         <li><a href="#testimonials">Testimonials</a></li>
+
+        <% if (isLoggedIn) { %>
+        <li><a href="/dashboard" class="btn">Account</a></li>
+        <% } else { %>
         <li><a href="/login" class="btn">Login</a></li>
         <li><a href="/register" class="btn btn-secondary">Register</a></li>
+        <% } %>
       </ul>
     </nav>
 

@@ -6,11 +6,52 @@
     <link
       rel="stylesheet"
       href="https://cdnjs.cloudflare.com/ajax/libs/skeleton/2.0.4/skeleton.css" />
-    <title>Document</title>
+    <link rel="stylesheet" href="css/style.css" />
+    <link rel="stylesheet" href="css/dashboard.css" />
+    <title>Dashboard</title>
   </head>
   <body>
-    <h1>Welcome <%= user.charAt(0).toUpperCase() + user.slice(1)%></h1>
+    <nav class="navbar">
+      <a href="/"><div class="logo">TrustBank</div></a>
+      <ul>
+        <li><a href="/dashboard">Dashboard</a></li>
+        <li><a href="/dashboard">Transactions</a></li>
+        <li><a href="/dashboard">Profile</a></li>
+        <li><a href="/logout" class="btn btn-danger">Logout</a></li>
+      </ul>
+    </nav>
 
-    <a href="/logout">Logout</a>
+    <center>
+      <h1>Welcome <%= user.charAt(0).toUpperCase() + user.slice(1)%></h1>
+    </center>
+
+    <section class="account-summary">
+      <h2>Account Summary</h2>
+      <p><strong>Balance:</strong> $5,400.00</p>
+      <p><strong>Last Transaction:</strong> $100 Withdrawal on 2024-12-12</p>
+    </section>
+
+    <section class="dashboard-widgets">
+      <div class="widget">
+        <h3>Transfer Money</h3>
+        <p>Send money to your friends and family with ease.</p>
+        <a href="/transfer" class="btn">Transfer</a>
+      </div>
+      <div class="widget">
+        <h3>Pay Bills</h3>
+        <p>Settle your utility bills quickly.</p>
+        <a href="/pay-bills" class="btn">Pay Now</a>
+      </div>
+    </section>
+
+    <center>
+      <section class="notifications">
+        <h2>Notifications</h2>
+        <ul>
+          <li>Your account statement is ready to download.</li>
+          <li>You received $500 from John D.</li>
+        </ul>
+      </section>
+    </center>
   </body>
 </html>
