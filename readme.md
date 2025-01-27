@@ -9,6 +9,8 @@ TrustBank is a user authentication system built using **Node.js, Express, Postgr
 - Password reset functionality
 - Secure password storage using bcrypt
 
+## Live preview : [Click to view Project](https://simple-banking-95qb.onrender.com/)
+
 ## Features
 
 - **User Authentication:** Secure login and registration with password hashing.
