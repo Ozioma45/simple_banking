@@ -1,49 +1,28 @@
+<!-- login.html -->
 <!DOCTYPE html>
 <html lang="en">
   <head>
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <link
-      rel="stylesheet"
-      href="https://cdnjs.cloudflare.com/ajax/libs/skeleton/2.0.4/skeleton.css" />
-    <title>Login</title>
+    <title>Login - TrustBank</title>
+    <link rel="stylesheet" href="css/fromstyle.css" />
   </head>
   <body>
-    <a href="/">Home</a>
-    <h1>Login Page</h1>
-
-    <ul>
-      <% if (messages.success_msg){%>
-        <li><%= messages.success_msg %></li>
-      <% } %>
-    </ul>
-
-    <ul>
-      <% if (messages.error){%>
-        <li><%= messages.error %></li>
-      <% } %>
-    </ul>
-
-    <form action="/users/login" method="POST">
-        <input
-          type="text"
-          id="email"
-          name="email"
-          placeholder="Email"
-          required />
-      </div>
-      <div>
+    <div class="form-container">
+      <h2>Login to Your Account</h2>
+      <form method="POST" action="/users/login">
+        <input type="email" name="email" placeholder="Email" required />
         <input
           type="password"
-          id="password"
           name="password"
-          placeholder="password"
+          placeholder="Password"
           required />
-      </div>
-      <div>
-        <input type="submit" value="Login" />
-      </div>
-      <a href="/users/register">Register</a>
-    </form>
+        <button type="submit" class="btn">Login</button>
+        <div class="links">
+          <a href="register.html">Don't have an account? Register</a>
+          <a href="reset.html">Forgot Password?</a>
+        </div>
+      </form>
+    </div>
   </body>
 </html>
